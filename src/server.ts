@@ -35,3 +35,19 @@ process.on("unhandledRejection", (err) => {
   }
   process.exit(1);
 });
+
+/**
+ * uncaught exception error EXAMPLE
+ * throw new Error(`I forgot to handle this local error!`);
+ */
+
+// uncaught exception error
+process.on("uncaughtException", (err) => {
+  console.log(`Uncaught exception detected ... Server shutting down ....`, err);
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  }
+  process.exit(1);
+});
