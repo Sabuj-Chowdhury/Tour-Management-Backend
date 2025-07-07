@@ -51,3 +51,14 @@ process.on("uncaughtException", (err) => {
   }
   process.exit(1);
 });
+
+// sigterm ---> signal termination error
+process.on("SIGTERM", () => {
+  console.log(`Signal termination error, SIGTERM....Server shutting down`);
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  }
+  process.exit(1);
+});
