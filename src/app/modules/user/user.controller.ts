@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 import httpStats from "http-status-codes";
 import { userServices } from "./user.services";
 
-const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     /*
     ***this moved to the user Service layer
@@ -21,12 +21,9 @@ const createUser = async (req: Request, res: Response) => {
       message: "User created successfully.",
       user,
     });
-  } catch (error: any) {
-    console.log(error);
-    res.status(httpStats.BAD_REQUEST).json({
-      message: `Something went wrong!! ${error.message}`,
-      error,
-    });
+  } catch (err: any) {
+    console.log(err);
+    next(err);
   }
 };
 
