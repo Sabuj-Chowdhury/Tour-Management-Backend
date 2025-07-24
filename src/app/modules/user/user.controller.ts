@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from "express";
 import httpStats from "http-status-codes";
 import { userServices } from "./user.services";
 import tryCatch from "../../utils/tryCatch";
+import { sendResponse } from "../../utils/sendResponse";
 
 // before using tryCatch util function
 
@@ -36,10 +37,11 @@ const createUser = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = await userServices.createUser(req.body);
 
-    res.status(httpStats.CREATED).json({
+    sendResponse(res, {
       success: true,
+      statusCode: httpStats.CREATED,
       message: "User Created Successfully!",
-      user,
+      data: user,
     });
   }
 );
@@ -48,10 +50,18 @@ const getAllUsers = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const users = await userServices.getAllUsers();
 
-    res.status(httpStats.OK).json({
+    // res.status(httpStats.OK).json({
+    //   success: true,
+    //   message: "All Users Retrieved Successfully!",
+    //   data: users,
+    // });
+
+    sendResponse(res, {
       success: true,
+      statusCode: httpStats.OK,
       message: "All Users Retrieved Successfully!",
-      data: users,
+      meta: users.meta,
+      data: users.users,
     });
   }
 );
