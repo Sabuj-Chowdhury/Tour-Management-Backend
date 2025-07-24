@@ -46,7 +46,7 @@ const createUser = tryCatch(
 
 const getAllUsers = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    const users = userServices.getAllUsers();
+    const users = await userServices.getAllUsers();
 
     res.status(httpStats.OK).json({
       success: true,
