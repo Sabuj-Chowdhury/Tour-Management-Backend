@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 
 import httpStats from "http-status-codes";
@@ -32,7 +33,6 @@ import tryCatch from "../../utils/tryCatch";
 // after using tryCatch util function
 
 const createUser = tryCatch(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (req: Request, res: Response, next: NextFunction) => {
     const user = await userServices.createUser(req.body);
 
@@ -44,6 +44,19 @@ const createUser = tryCatch(
   }
 );
 
+const getAllUsers = tryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const users = userServices.getAllUsers();
+
+    res.status(httpStats.OK).json({
+      success: true,
+      message: "All Users Retrieved Successfully!",
+      data: users,
+    });
+  }
+);
+
 export const userController = {
   createUser,
+  getAllUsers,
 };
