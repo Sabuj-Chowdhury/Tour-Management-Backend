@@ -17,3 +17,8 @@ userRouter.get(
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   userController.getAllUsers
 );
+userRouter.patch(
+  "/:id",
+  checkAuth(...Object.values(Role)),
+  userController.updateUser
+);
