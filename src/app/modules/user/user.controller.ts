@@ -52,11 +52,12 @@ const createUser = tryCatch(
 const updateUser = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const userID = req.params.id;
-    const token = req.headers.authorization;
-    const verifiedToken = verifyTokenFn(
-      token as string,
-      envVariable.JWT_ACCESS_SECRET
-    ) as JwtPayload;
+    // const token = req.headers.authorization;
+    // const verifiedToken = verifyTokenFn(
+    //   token as string,
+    //   envVariable.JWT_ACCESS_SECRET
+    // ) as JwtPayload;
+    const verifiedToken = req.user;
     const payload = req.body;
     const user = await userServices.updateUser(userID, payload, verifiedToken);
 

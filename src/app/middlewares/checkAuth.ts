@@ -29,6 +29,8 @@ export const checkAuth =
           "You are not permitted to view this Route!"
         );
       }
+
+      req.user = verifyToken;
       // if ((verifyToken as JwtPayload).role !== Role.ADMIN) {
       //   throw new AppError(
       //     httpStatus.BAD_REQUEST,
