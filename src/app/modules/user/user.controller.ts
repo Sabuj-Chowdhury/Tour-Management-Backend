@@ -5,6 +5,9 @@ import httpStats from "http-status-codes";
 import { userServices } from "./user.services";
 import tryCatch from "../../utils/tryCatch";
 import { sendResponse } from "../../utils/sendResponse";
+import { verifyTokenFn } from "../../utils/jwt";
+import { envVariable } from "../../config/env";
+import { JwtPayload } from "jsonwebtoken";
 
 // before using tryCatch util function
 
@@ -46,6 +49,27 @@ const createUser = tryCatch(
   }
 );
 
+const updateUser = tryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userID = req.params.id;
+    // const token = req.headers.authorization;
+    // const verifiedToken = verifyTokenFn(
+    //   token as string,
+    //   envVariable.JWT_ACCESS_SECRET
+    // ) as JwtPayload;
+    const verifiedToken = req.user;
+    const payload = req.body;
+    const user = await userServices.updateUser(userID, payload, verifiedToken);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStats.OK,
+      message: "User updated Successfully!",
+      data: user,
+    });
+  }
+);
+
 const getAllUsers = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const users = await userServices.getAllUsers();
@@ -69,4 +93,5 @@ const getAllUsers = tryCatch(
 export const userController = {
   createUser,
   getAllUsers,
+  updateUser,
 };
