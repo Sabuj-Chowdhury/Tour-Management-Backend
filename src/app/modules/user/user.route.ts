@@ -9,7 +9,7 @@ export const userRouter = Router();
 
 userRouter.post(
   "/register",
-  validateRequest(userZodSchema),
+  // validateRequest(userZodSchema),
   userController.createUser
 );
 userRouter.get(

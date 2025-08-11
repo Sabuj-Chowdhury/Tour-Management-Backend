@@ -13,7 +13,17 @@ export const globalErrorHandler = (
   let statusCode = 500;
   let message = `Something went wrong!!`;
 
-  if (err instanceof AppError) {
+  // duplicate email -mongoose error
+  if (err.code === 11000) {
+    const matchedArray = err.message.match(/"([^"]*)"/);
+    statusCode = 400;
+    message = `${matchedArray[1]} already exist!`;
+  }
+  // ObjectID error / cast error -> mongoose
+  else if (err.name === "CastError") {
+    statusCode = 400;
+    message = `Invalid mongoose ObjectID, please provide a valid ObjectID!`;
+  } else if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
   } else if (err instanceof Error) {
