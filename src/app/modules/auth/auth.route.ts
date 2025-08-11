@@ -5,3 +5,4 @@ export const authRouter = Router();
 
 authRouter.post("/login", authController.credentialLogin);
 authRouter.post("/refresh-token", authController.newAccessToken);
+authRouter.post("/logout", authController.logout);
