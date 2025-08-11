@@ -7,6 +7,8 @@ import {
   createNewAccessTokenWithRefreshToken,
   createUserTokens,
 } from "../../utils/userTokens";
+import { JwtPayload } from "jsonwebtoken";
+import { envVariable } from "../../config/env";
 
 const credentialLogin = async (payload: Partial<IUser>) => {
   const { email, password } = payload;
@@ -45,7 +47,32 @@ const getNewAccessToken = async (refreshToken: string) => {
   };
 };
 
+const resetPassword = async (
+  oldPassword: string,
+  newPassword: string,
+  decodedToken: JwtPayload
+) => {
+  const user = await User.findById(decodedToken.userID);
+
+  const isOldPasswordMatch = await bcrypt.compare(
+    oldPassword,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    user!.password as string
+  );
+  if (!isOldPasswordMatch) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "old Password does not match!");
+  }
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  user!.password = await bcrypt.hash(
+    newPassword,
+    Number(envVariable.BCRYPT_SALT_ROUND)
+  );
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  user!.save();
+};
+
 export const authServices = {
   credentialLogin,
   getNewAccessToken,
+  resetPassword,
 };
