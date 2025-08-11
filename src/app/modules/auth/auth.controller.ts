@@ -18,6 +18,21 @@ const credentialLogin = tryCatch(
   }
 );
 
+const newAccessToken = tryCatch(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    const refreshToken = req.cookies.refreshToken;
+    const tokenInfo = await authServices.getNewAccessToken(refreshToken);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "",
+      data: tokenInfo,
+    });
+  }
+);
+
 export const authController = {
   credentialLogin,
+  newAccessToken,
 };
