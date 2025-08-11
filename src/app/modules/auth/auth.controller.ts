@@ -12,20 +12,21 @@ import { envVariable } from "../../config/env";
 import passport from "passport";
 
 const credentialLogin = tryCatch(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (req: Request, res: Response, next: NextFunction) => {
     // const loginInfo = await authServices.credentialLogin(req.body);
     passport.authenticate("local", async (err: any, user: any, info: any) => {
       if (err) {
-        return next(err);
+        // return next(err);
+        return next(new AppError(401, err));
       }
 
       if (!user) {
-        return new AppError(401, info.message);
+        return next(new AppError(401, info.message));
       }
 
       const userTokens = createUserTokens(user);
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password: pass, ...rest } = user.toObject();
       setAuthCookies(res, userTokens);
 
