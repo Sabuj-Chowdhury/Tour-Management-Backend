@@ -8,11 +8,13 @@ import { setAuthCookies } from "../../utils/setCookies";
 import { createUserTokens } from "../../utils/userTokens";
 import { JwtPayload } from "jsonwebtoken";
 import { envVariable } from "../../config/env";
+import passport from "passport";
 
 const credentialLogin = tryCatch(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (req: Request, res: Response, next: NextFunction) => {
-    const loginInfo = await authServices.credentialLogin(req.body);
+    // const loginInfo = await authServices.credentialLogin(req.body);
+    passport.authenticate();
 
     setAuthCookies(res, loginInfo);
 

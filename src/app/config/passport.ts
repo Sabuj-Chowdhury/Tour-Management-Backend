@@ -18,11 +18,22 @@ passport.use(
       usernameField: "email",
       passwordField: "password",
     },
-    async (email: string, password: string, done: VerifyCallback) => {
+    async (email: string, password: string, done) => {
       try {
         const isUserExist = await User.findOne({ email });
         if (!isUserExist) {
           return done(null, false, { message: "User does not exist" });
+        }
+
+        const isGoogleAuthenticated = isUserExist.auths.some(
+          (providerObjects) => providerObjects.provider === "google"
+        );
+
+        if (isGoogleAuthenticated) {
+          return done(null, false, {
+            message:
+              "authenticated through Google login, please set a password to login!",
+          });
         }
 
         const isPasswordMatched = await bcryptjs.compare(
