@@ -7,13 +7,14 @@ import notFound from "./app/middlewares/notFound";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import expressSession from "express-session";
+import { envVariable } from "./app/config/env";
 
 const app = express();
 
 // middleware
 app.use(
   expressSession({
-    secret: "my secret",
+    secret: envVariable.EXPRESS_SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
   })
