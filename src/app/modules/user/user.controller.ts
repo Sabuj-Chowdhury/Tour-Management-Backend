@@ -59,7 +59,11 @@ const updateUser = tryCatch(
     // ) as JwtPayload;
     const verifiedToken = req.user;
     const payload = req.body;
-    const user = await userServices.updateUser(userID, payload, verifiedToken);
+    const user = await userServices.updateUser(
+      userID,
+      payload,
+      verifiedToken as JwtPayload
+    );
 
     sendResponse(res, {
       success: true,
