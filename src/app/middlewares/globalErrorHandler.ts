@@ -13,6 +13,15 @@ export const globalErrorHandler = (
   let statusCode = 500;
   let message = `Something went wrong!!`;
 
+  const errorSource: any = [
+    /**
+     *{
+     * path :
+     * message:
+     * }
+     */
+  ];
+
   // duplicate email -mongoose error
   if (err.code === 11000) {
     const matchedArray = err.message.match(/"([^"]*)"/);
@@ -23,6 +32,21 @@ export const globalErrorHandler = (
   else if (err.name === "CastError") {
     statusCode = 400;
     message = `Invalid mongoose ObjectID, please provide a valid ObjectID!`;
+  }
+  // validation error ->mongoose
+  else if (err.name === "ValidationError") {
+    statusCode = 400;
+
+    const errors = Object.values(err.errors);
+
+    errors.forEach((errorObject: any) =>
+      errorSource.push({
+        path: errorObject.path,
+        message: errorObject.message,
+      })
+    );
+
+    message = "Validation error!";
   } else if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
@@ -33,7 +57,8 @@ export const globalErrorHandler = (
   res.status(statusCode).json({
     success: false,
     message,
-    err,
+    errorSource,
+    // err,
     stack: envVariable.NODE_ENV === "development" ? err.stack : null,
   });
 };
