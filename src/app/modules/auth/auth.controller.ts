@@ -5,6 +5,9 @@ import httpStatus from "http-status-codes";
 import { authServices } from "./auth.service";
 import AppError from "../../errorHelpers/AppError";
 import { setAuthCookies } from "../../utils/setCookies";
+import { createUserTokens } from "../../utils/userTokens";
+import { JwtPayload } from "jsonwebtoken";
+import { envVariable } from "../../config/env";
 
 const credentialLogin = tryCatch(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -74,7 +77,11 @@ const resetPassword = tryCatch(
     const oldPassword = req.body.oldPassword;
     const decodedToken = req.user;
 
-    await authServices.resetPassword(oldPassword, newPassword, decodedToken);
+    await authServices.resetPassword(
+      oldPassword,
+      newPassword,
+      decodedToken as JwtPayload
+    );
 
     sendResponse(res, {
       success: true,
@@ -85,9 +92,27 @@ const resetPassword = tryCatch(
   }
 );
 
+const googleCallBack = tryCatch(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    console.log(user);
+    if (!user) {
+      throw new AppError(httpStatus.BAD_REQUEST, "User not found!");
+    }
+
+    const tokenInfo = createUserTokens(user);
+
+    setAuthCookies(res, tokenInfo);
+
+    res.redirect(envVariable.FRONTEND_URL);
+  }
+);
+
 export const authController = {
   credentialLogin,
   newAccessToken,
   logout,
   resetPassword,
+  googleCallBack,
 };

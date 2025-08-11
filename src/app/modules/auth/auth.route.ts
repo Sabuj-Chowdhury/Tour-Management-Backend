@@ -1,7 +1,8 @@
-import { Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { authController } from "./auth.controller";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { Role } from "../user/user.interface";
+import passport from "passport";
 
 export const authRouter = Router();
 
@@ -12,4 +13,19 @@ authRouter.post(
   "/reset-password",
   checkAuth(...Object.values(Role)),
   authController.resetPassword
+);
+authRouter.get(
+  "/google",
+
+  async (req: Request, res: Response, next: NextFunction) => {
+    passport.authenticate("google", {
+      scope: ["profile", "email"],
+    })(req, res, next);
+  }
+);
+
+authRouter.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  authController.googleCallBack
 );
