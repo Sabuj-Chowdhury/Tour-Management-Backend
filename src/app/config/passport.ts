@@ -8,7 +8,40 @@ import {
 import { envVariable } from "./env";
 import { User } from "../modules/user/user.model";
 import { Role } from "../modules/user/user.interface";
+import { Strategy as LocalStrategy } from "passport-local";
+import bcryptjs from "bcryptjs";
 
+// for custom authentication
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    async (email: string, password: string, done: VerifyCallback) => {
+      try {
+        const isUserExist = await User.findOne({ email });
+        if (!isUserExist) {
+          return done(null, false, { message: "User does not exist" });
+        }
+
+        const isPasswordMatched = await bcryptjs.compare(
+          password as string,
+          isUserExist.password as string
+        );
+        if (!isPasswordMatched) {
+          return done(null, false, { message: "Password does not match!" });
+        }
+        return done(null, isUserExist);
+      } catch (error) {
+        console.log(error);
+        done(error);
+      }
+    }
+  )
+);
+
+// for google login
 passport.use(
   new GoogleStrategy(
     {
