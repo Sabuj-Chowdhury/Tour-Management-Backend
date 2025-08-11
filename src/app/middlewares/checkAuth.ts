@@ -4,6 +4,8 @@ import httpStatus from "http-status-codes";
 import AppError from "../errorHelpers/AppError";
 import { verifyTokenFn } from "../utils/jwt";
 import { envVariable } from "../config/env";
+import { User } from "../modules/user/user.model";
+import { IsActive } from "../modules/user/user.interface";
 
 export const checkAuth =
   (...authRoles: string[]) =>
@@ -23,6 +25,24 @@ export const checkAuth =
       if (!verifyToken) {
         throw new AppError(httpStatus.BAD_REQUEST, "You are not authorized!");
       }
+      const isUserExist = await User.findOne({ email: verifyToken.email });
+
+      if (!isUserExist) {
+        throw new AppError(httpStatus.BAD_REQUEST, "User Does not exist!");
+      }
+      if (
+        isUserExist.isActive === IsActive.BLOCKED ||
+        isUserExist.isActive === IsActive.INACTIVE
+      ) {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          `User is ${isUserExist.isActive}!`
+        );
+      }
+      if (isUserExist.isDeleted) {
+        throw new AppError(httpStatus.BAD_REQUEST, "User is Deleted!");
+      }
+
       if (!authRoles.includes(verifyToken.role)) {
         throw new AppError(
           httpStatus.BAD_REQUEST,
@@ -31,12 +51,6 @@ export const checkAuth =
       }
 
       req.user = verifyToken;
-      // if ((verifyToken as JwtPayload).role !== Role.ADMIN) {
-      //   throw new AppError(
-      //     httpStatus.BAD_REQUEST,
-      //     "You are not permitted to view this Route!"
-      //   );
-      // }
 
       next();
     } catch (error) {
