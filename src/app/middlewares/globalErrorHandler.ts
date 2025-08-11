@@ -47,6 +47,17 @@ export const globalErrorHandler = (
     );
 
     message = "Validation error!";
+  }
+  // zod error
+  else if (err.name === "ZodError") {
+    statusCode = 400;
+    message = "Zod error";
+    err.issues.forEach((issue: any) => {
+      errorSource.push({
+        path: issue.path[issue.path.length - 1],
+        message: issue.message,
+      });
+    });
   } else if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
@@ -58,7 +69,7 @@ export const globalErrorHandler = (
     success: false,
     message,
     errorSource,
-    // err,
+    err,
     stack: envVariable.NODE_ENV === "development" ? err.stack : null,
   });
 };
