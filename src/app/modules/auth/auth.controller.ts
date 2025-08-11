@@ -43,7 +43,32 @@ const newAccessToken = tryCatch(
   }
 );
 
+const logout = tryCatch(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    });
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    });
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Logged out Successfully!",
+      data: null,
+    });
+  }
+);
+
 export const authController = {
   credentialLogin,
   newAccessToken,
+  logout,
 };
