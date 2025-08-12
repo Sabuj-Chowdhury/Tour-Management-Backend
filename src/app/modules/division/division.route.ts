@@ -27,3 +27,9 @@ divisionRouter.patch(
   validateRequest(updatedDivisionZodSchema),
   divisionController.updateDivision
 );
+
+divisionRouter.delete(
+  "/:id",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  divisionController.deleteDivision
+);
