@@ -74,6 +74,20 @@ const createTour = tryCatch(
   }
 );
 
+const getAllTours = tryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const tours = await tourService.getAllTours();
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "All tours!",
+      data: tours.data,
+      meta: tours.meta,
+    });
+  }
+);
+
 const updateTour = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
@@ -110,6 +124,7 @@ export const tourController = {
   updateTourType,
   deleteTourType,
   createTour,
+  getAllTours,
   updateTour,
   deleteTour,
 };
