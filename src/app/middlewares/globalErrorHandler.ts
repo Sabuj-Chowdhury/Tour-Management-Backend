@@ -2,6 +2,11 @@
 import { NextFunction, Request, Response } from "express";
 import { envVariable } from "../config/env";
 import AppError from "../errorHelpers/AppError";
+import { handleDuplicateError } from "../helpers/handleDuplicateError";
+import { handleCastError } from "../helpers/handleCastError";
+import { handleValidationError } from "../helpers/handleValidationError";
+import { handleZodError } from "../helpers/handleZodError";
+import { IErrorSources } from "../interface/error.types";
 
 export const globalErrorHandler = (
   err: any,
@@ -13,7 +18,34 @@ export const globalErrorHandler = (
   let statusCode = 500;
   let message = `Something went wrong!!`;
 
-  if (err instanceof AppError) {
+  let errorSource: IErrorSources[] = [];
+
+  // duplicate email -mongoose error
+  if (err.code === 11000) {
+    const simplifiedError = handleDuplicateError(err);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+  }
+  // ObjectID error / cast error -> mongoose
+  else if (err.name === "CastError") {
+    const simplifiedError = handleCastError(err);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+  }
+  // validation error ->mongoose
+  else if (err.name === "ValidationError") {
+    const simplifiedError = handleValidationError(err);
+    statusCode = simplifiedError.statusCode;
+    errorSource = simplifiedError.errorSource as IErrorSources[];
+    message = simplifiedError.message;
+  }
+  // zod error
+  else if (err.name === "ZodError") {
+    const simplifiedError = handleZodError(err);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorSource = simplifiedError.errorSource as IErrorSources[];
+  } else if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
   } else if (err instanceof Error) {
@@ -23,7 +55,8 @@ export const globalErrorHandler = (
   res.status(statusCode).json({
     success: false,
     message,
-    err,
+    errorSource,
+    err: envVariable.NODE_ENV === "development" ? err : null,
     stack: envVariable.NODE_ENV === "development" ? err.stack : null,
   });
 };

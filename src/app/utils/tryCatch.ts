@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { envVariable } from "../config/env";
 
 type fnType = (
   req: Request,
@@ -10,7 +11,10 @@ const tryCatch =
   (fn: fnType) => (req: Request, res: Response, next: NextFunction) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Promise.resolve(fn(req, res, next)).catch((err: any) => {
-      console.log(err);
+      if (envVariable.NODE_ENV === "development") {
+        console.log(err);
+      }
+
       next(err);
     });
   };
