@@ -5,6 +5,7 @@ import { validateRequest } from "../../middlewares/validateRequest";
 import {
   createTourTypeZodSchema,
   createTourZodSchema,
+  updateTourZodSchema,
 } from "./tour.validation";
 import { tourController } from "./tour.controller";
 
@@ -40,4 +41,11 @@ tourRouter.post(
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   validateRequest(createTourZodSchema),
   tourController.createTour
+);
+
+tourRouter.patch(
+  "/:id",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  validateRequest(updateTourZodSchema),
+  tourController.updateTour
 );
