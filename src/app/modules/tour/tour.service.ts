@@ -10,7 +10,7 @@ const createTourTypes = async (payload: ITourType) => {
     throw new AppError(httpStatus.BAD_REQUEST, "Tour type already exists.");
   }
 
-  const tourTypes = await TourType.create(payload);
+  const tourTypes = await TourType.create({ name });
 
   return tourTypes;
 };
