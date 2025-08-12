@@ -11,13 +11,15 @@ export const TourType = model<ITourType>("TourType", tourTypeSchema);
 const tourSchema = new Schema<ITour>(
   {
     title: { type: String, required: true },
-    slug: { type: String, required: true, unique: true },
+    slug: { type: String, unique: true },
     description: { type: String },
     images: { type: [String], default: [] },
     location: { type: String },
-    costForm: { type: Number },
+    costFrom: { type: Number },
     startDate: { type: Date },
     endDate: { type: Date },
+    departureLocation: { type: String },
+    arrivalLocation: { type: String },
     included: { type: [String], default: [] },
     excluded: { type: [String], default: [] },
     amenities: { type: [String], default: [] },
@@ -29,6 +31,7 @@ const tourSchema = new Schema<ITour>(
   },
   {
     timestamps: true,
+    versionKey: false,
   }
 );
 export const Tour = model<ITour>("Tour", tourSchema);
