@@ -20,6 +20,13 @@ tourRouter.post(
 
 tourRouter.get("/tour-types", tourController.getAllTourTypes);
 
+tourRouter.patch(
+  "/tour-types/:id",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  validateRequest(createTourTypeZodSchema),
+  tourController.updateTourType
+);
+
 /* --------------------- TOUR ROUTES ---------------------- */
 tourRouter.post(
   "/create",
