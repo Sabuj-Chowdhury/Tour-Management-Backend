@@ -13,3 +13,5 @@ divisionRouter.post(
   validateRequest(createDivisionZodSchema),
   divisionController.createDivision
 );
+
+divisionRouter.get("/", divisionController.getAllDivisions);
