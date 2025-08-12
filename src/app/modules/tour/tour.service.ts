@@ -34,6 +34,18 @@ const updateTourType = async (id: string, payload: ITourType) => {
   return updateTourType;
 };
 
+const deleteTourType = async (id: string) => {
+  const existingTourType = await TourType.findById(id);
+
+  if (!existingTourType) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Tour type not found.");
+  }
+
+  const deleteTourType = await TourType.findByIdAndDelete(id);
+
+  return deleteTourType;
+};
+
 const createTour = async (payload: ITour) => {
   const existingTour = await Tour.findOne({ title: payload.title });
 
@@ -52,5 +64,6 @@ export const tourService = {
   createTourTypes,
   getAllTourTypes,
   updateTourType,
+  deleteTourType,
   createTour,
 };
