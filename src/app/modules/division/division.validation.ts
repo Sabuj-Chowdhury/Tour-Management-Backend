@@ -5,3 +5,9 @@ export const createDivisionZodSchema = z.object({
   thumbnail: z.string().optional(),
   description: z.string().optional(),
 });
+
+export const updatedDivisionZodSchema = z.object({
+  name: z.string().min(1).optional(),
+  thumbnail: z.string().optional(),
+  description: z.string().optional(),
+});
