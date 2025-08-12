@@ -49,3 +49,9 @@ tourRouter.patch(
   validateRequest(updateTourZodSchema),
   tourController.updateTour
 );
+
+tourRouter.delete(
+  "/:id",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  tourController.deleteTour
+);
