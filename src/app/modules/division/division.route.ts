@@ -15,3 +15,5 @@ divisionRouter.post(
 );
 
 divisionRouter.get("/", divisionController.getAllDivisions);
+
+divisionRouter.get("/:slug", divisionController.getSingleDivision);
