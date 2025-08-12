@@ -18,6 +18,8 @@ tourRouter.post(
   tourController.createTourTypes
 );
 
+tourRouter.get("/tour-types", tourController.getAllTourTypes);
+
 /* --------------------- TOUR ROUTES ---------------------- */
 tourRouter.post(
   "/create",
