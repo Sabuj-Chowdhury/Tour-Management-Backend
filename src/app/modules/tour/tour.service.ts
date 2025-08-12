@@ -60,10 +60,23 @@ const createTour = async (payload: ITour) => {
   return tour;
 };
 
+const updateTour = async (id: string, payload: Partial<ITour>) => {
+  const existingTour = await Tour.findById(id);
+
+  if (!existingTour) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Tour not found.");
+  }
+
+  const updatedTour = await Tour.findByIdAndUpdate(id, payload, { new: true });
+
+  return updatedTour;
+};
+
 export const tourService = {
   createTourTypes,
   getAllTourTypes,
   updateTourType,
   deleteTourType,
   createTour,
+  updateTour,
 };
