@@ -18,6 +18,18 @@ const createDivision = async (payload: IDivision) => {
   return division;
 };
 
+const getAllDivisions = async () => {
+  const divisions = await Division.find({});
+  const totalDivisions = await Division.countDocuments();
+  return {
+    date: divisions,
+    meta: {
+      total: totalDivisions,
+    },
+  };
+};
+
 export const divisionService = {
   createDivision,
+  getAllDivisions,
 };
