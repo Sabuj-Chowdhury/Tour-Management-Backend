@@ -26,7 +26,7 @@ const getAllDivisions = tryCatch(
       statusCode: httpStatus.OK,
       success: true,
       message: "All divisions!",
-      data: divisions.date,
+      data: divisions.data,
       meta: divisions.meta,
     });
   }

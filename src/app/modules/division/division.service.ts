@@ -22,14 +22,23 @@ const getAllDivisions = async () => {
   const divisions = await Division.find({});
   const totalDivisions = await Division.countDocuments();
   return {
-    date: divisions,
+    data: divisions,
     meta: {
       total: totalDivisions,
     },
   };
 };
 
+const getSingleDivision = async (slug: string) => {
+  const division = await Division.findOne({ slug });
+
+  return {
+    data: division,
+  };
+};
+
 export const divisionService = {
   createDivision,
   getAllDivisions,
+  getSingleDivision,
 };
