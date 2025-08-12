@@ -60,6 +60,19 @@ const createTour = async (payload: ITour) => {
   return tour;
 };
 
+const getAllTours = async () => {
+  const tours = await Tour.find({});
+
+  const totalTours = await Tour.countDocuments();
+
+  return {
+    data: tours,
+    meta: {
+      total: totalTours,
+    },
+  };
+};
+
 const updateTour = async (id: string, payload: Partial<ITour>) => {
   const existingTour = await Tour.findById(id);
 
@@ -89,6 +102,7 @@ export const tourService = {
   updateTourType,
   deleteTourType,
   createTour,
+  getAllTours,
   updateTour,
   deleteTour,
 };
