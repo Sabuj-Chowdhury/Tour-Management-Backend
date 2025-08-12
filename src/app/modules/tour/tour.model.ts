@@ -34,4 +34,23 @@ const tourSchema = new Schema<ITour>(
     versionKey: false,
   }
 );
+
+// pre -> save -> hook for slug based on title
+tourSchema.pre("save", async function (next) {
+  if (this.isModified("title")) {
+    const baseSlug = this.title.toLowerCase().split(" ").join("-");
+
+    let slug = `${baseSlug}`;
+
+    let counter = 0;
+
+    while (await Tour.exists({ slug })) {
+      slug = `${slug}-${counter++}`;
+    }
+
+    this.slug = slug;
+  }
+  next();
+});
+
 export const Tour = model<ITour>("Tour", tourSchema);
