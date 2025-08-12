@@ -32,7 +32,23 @@ const getAllDivisions = tryCatch(
   }
 );
 
+const getSingleDivision = tryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const slug = req.params.slug;
+
+    const division = await divisionService.getSingleDivision(slug);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Single division!",
+      data: division.data,
+    });
+  }
+);
+
 export const divisionController = {
   createDivision,
   getAllDivisions,
+  getSingleDivision,
 };
