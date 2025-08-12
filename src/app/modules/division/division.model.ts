@@ -28,4 +28,26 @@ divisionSchema.pre("save", async function (next) {
   next();
 });
 
+// pre - update -> hook for division slug
+divisionSchema.pre("findOneAndUpdate", async function (next) {
+  const division = this.getUpdate() as Partial<IDivision>;
+
+  if (division.name) {
+    const baseSlug = division.name.toLowerCase().split(" ").join("-");
+
+    let slug = `${baseSlug}-division`;
+
+    let counter = 0;
+
+    while (await Division.exists({ slug })) {
+      slug = `${slug}-${counter++}`;
+    }
+
+    division.slug = slug;
+  }
+
+  this.setUpdate(division);
+  next();
+});
+
 export const Division = model<IDivision>("Division", divisionSchema);
