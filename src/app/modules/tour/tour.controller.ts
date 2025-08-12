@@ -76,10 +76,26 @@ const createTour = tryCatch(
   }
 );
 
+const updateTour = tryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+
+    const updatedTour = await tourService.updateTour(id, req.body);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Tour updated successfully!",
+      data: updatedTour,
+    });
+  }
+);
+
 export const tourController = {
   createTourTypes,
   getAllTourTypes,
   updateTourType,
   deleteTourType,
   createTour,
+  updateTour,
 };
