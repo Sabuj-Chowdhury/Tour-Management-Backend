@@ -8,7 +8,24 @@ const divisionSchema = new Schema<IDivision>(
     thumbnail: { type: String },
     description: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
+
+// pre - save -> hook for division slug
+divisionSchema.pre("save", async function (next) {
+  if (this.isModified("name")) {
+    const baseSlug = this.name.toLowerCase().split(" ").join("-");
+
+    let slug = `${baseSlug}-division`;
+
+    let counter = 0;
+    while (await Division.exists({ slug })) {
+      slug = `${slug}-${counter++}`;
+    }
+
+    this.slug = slug;
+  }
+  next();
+});
 
 export const Division = model<IDivision>("Division", divisionSchema);
