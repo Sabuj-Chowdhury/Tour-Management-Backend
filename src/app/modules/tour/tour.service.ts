@@ -10,13 +10,13 @@ const createTourTypes = async (payload: ITourType) => {
     throw new AppError(httpStatus.BAD_REQUEST, "Tour type already exists.");
   }
 
-  const tourTypes = await TourType.create({ name });
+  const tourTypes = await TourType.create(payload);
 
   return tourTypes;
 };
 
 const getAllTourTypes = async () => {
-  const allTourTypes = await TourType.find();
+  const allTourTypes = await TourType.find({});
   return allTourTypes;
 };
 
@@ -73,6 +73,12 @@ const updateTour = async (id: string, payload: Partial<ITour>) => {
 };
 
 const deleteTour = async (id: string) => {
+  const existingTour = await Tour.findOne({ _id: id });
+
+  if (!existingTour) {
+    throw new AppError(httpStatus.BAD_REQUEST, "No Tour found.");
+  }
+
   const tour = await Tour.findByIdAndDelete(id);
   return tour;
 };

@@ -7,9 +7,7 @@ import httpStatus from "http-status-codes";
 
 const createTourTypes = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { name } = req.body;
-
-    const tourType = await tourService.createTourTypes(name);
+    const tourType = await tourService.createTourTypes(req.body);
 
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
@@ -22,7 +20,7 @@ const createTourTypes = tryCatch(
 
 const getAllTourTypes = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    const tourTypes = tourService.getAllTourTypes;
+    const tourTypes = await tourService.getAllTourTypes();
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -35,9 +33,9 @@ const getAllTourTypes = tryCatch(
 
 const updateTourType = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
-    const { name } = req.body;
-    const updateTourType = await tourService.updateTourType(id, name);
+    const id = req.params.id;
+
+    const updateTourType = await tourService.updateTourType(id, req.body);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
