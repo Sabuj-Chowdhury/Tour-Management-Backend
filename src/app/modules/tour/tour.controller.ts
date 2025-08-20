@@ -20,13 +20,18 @@ const createTourTypes = tryCatch(
 
 const getAllTourTypes = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    const tourTypes = await tourService.getAllTourTypes();
+    const query = req.query;
+
+    const tourTypes = await tourService.getAllTourTypes(
+      query as Record<string, string>
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: "ALL Tour types retrieved successfully",
-      data: tourTypes,
+      data: tourTypes.data,
+      meta: tourTypes.meta,
     });
   }
 );
