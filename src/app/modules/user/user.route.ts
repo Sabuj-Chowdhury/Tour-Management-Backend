@@ -23,3 +23,9 @@ userRouter.patch(
   checkAuth(...Object.values(Role)),
   userController.updateUser
 );
+
+userRouter.get(
+  "/:id",
+  checkAuth(...Object.values(Role)),
+  userController.getSingleUser
+);
