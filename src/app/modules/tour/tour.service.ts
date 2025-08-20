@@ -1,3 +1,4 @@
+import { excludeFields } from "../../constant";
 import AppError from "../../errorHelpers/AppError";
 import { searchConst } from "./tour.constant";
 import { ITour, ITourType } from "./tour.interface";
@@ -66,9 +67,14 @@ const getAllTours = async (query: Record<string, string>) => {
 
   const filter = query;
   const searchTerm = query.search || "";
+  const sort = query.sort || "-createdAt";
   // console.log(search);
 
-  delete filter["search"];
+  // to delete field from the filter
+  for (const field of excludeFields) {
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete filter[field];
+  }
 
   const search = {
     $or: searchConst.map((field) => ({
@@ -77,7 +83,7 @@ const getAllTours = async (query: Record<string, string>) => {
   };
 
   // console.log(filter);
-  const tours = await Tour.find(search).find(filter);
+  const tours = await Tour.find(search).find(filter).sort(sort);
 
   const totalTours = await Tour.countDocuments();
 
