@@ -36,6 +36,21 @@ const getAllTourTypes = tryCatch(
   }
 );
 
+const getSingleTourType = tryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+
+    const tourType = await tourService.getSingleTourType(id);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Single tour type!",
+      data: tourType.data,
+    });
+  }
+);
+
 const updateTourType = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
@@ -145,6 +160,7 @@ const deleteTour = tryCatch(
 export const tourController = {
   createTourTypes,
   getAllTourTypes,
+  getSingleTourType,
   updateTourType,
   deleteTourType,
   createTour,
