@@ -76,7 +76,11 @@ const updateUser = tryCatch(
 
 const getAllUsers = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    const users = await userServices.getAllUsers();
+    const query = req.query;
+
+    const users = await userServices.getAllUsers(
+      query as Record<string, string>
+    );
 
     // res.status(httpStats.OK).json({
     //   success: true,
@@ -89,7 +93,22 @@ const getAllUsers = tryCatch(
       statusCode: httpStats.OK,
       message: "All Users Retrieved Successfully!",
       meta: users.meta,
-      data: users.users,
+      data: users.data,
+    });
+  }
+);
+
+const getSingleUser = tryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+
+    const user = await userServices.getSingleUser(id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStats.OK,
+      message: "Single user!",
+      data: user.data,
     });
   }
 );
@@ -98,4 +117,5 @@ export const userController = {
   createUser,
   getAllUsers,
   updateUser,
+  getSingleUser,
 };

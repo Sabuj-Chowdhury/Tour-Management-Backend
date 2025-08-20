@@ -20,7 +20,10 @@ const createDivision = tryCatch(
 
 const getAllDivisions = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    const divisions = await divisionService.getAllDivisions();
+    const query = req.query;
+    const divisions = await divisionService.getAllDivisions(
+      query as Record<string, string>
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.OK,

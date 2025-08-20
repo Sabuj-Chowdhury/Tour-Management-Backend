@@ -5,15 +5,17 @@ import httpStatus from "http-status-codes";
 import bcryptjs from "bcryptjs";
 import { envVariable } from "../../config/env";
 import { JwtPayload } from "jsonwebtoken";
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { userConstants } from "./user.constants";
 
 const createUser = async (payload: Partial<IUser>) => {
   const { email, password, ...rest } = payload;
 
   const isUserExist = await User.findOne({ email });
 
-  // if (isUserExist) {
-  //   throw new AppError(httpStatus.BAD_REQUEST, "User already Exists");
-  // }
+  if (isUserExist) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User already Exists");
+  }
 
   const hashedPassword = await bcryptjs.hash(
     password as string,
@@ -80,14 +82,32 @@ const updateUser = async (
   return updatedUser;
 };
 
-const getAllUsers = async () => {
-  const users = await User.find();
-  const totalUser = await User.countDocuments();
+const getAllUsers = async (query: Record<string, string>) => {
+  const queryBuilder = new QueryBuilder(User.find(), query);
+
+  const userData = queryBuilder
+    .filter()
+    .search(userConstants)
+    .sort()
+    .fields()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    userData.build(),
+    queryBuilder.getMeta(),
+  ]);
+
   return {
-    users,
-    meta: {
-      total: totalUser,
-    },
+    data,
+    meta,
+  };
+};
+
+const getSingleUser = async (id: string) => {
+  const user = await User.findById(id);
+
+  return {
+    data: user,
   };
 };
 
@@ -95,4 +115,5 @@ export const userServices = {
   createUser,
   getAllUsers,
   updateUser,
+  getSingleUser,
 };
