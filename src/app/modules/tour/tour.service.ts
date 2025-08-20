@@ -141,7 +141,7 @@ const getSingleTour = async (slug: string) => {
   const tour = await Tour.findOne({ slug });
 
   return {
-    tour,
+    data: tour,
   };
 };
 
