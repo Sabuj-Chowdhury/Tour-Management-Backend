@@ -76,7 +76,11 @@ const createTour = tryCatch(
 
 const getAllTours = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    const tours = await tourService.getAllTours();
+    const query = req.query;
+
+    const tours = await tourService.getAllTours(
+      query as Record<string, string>
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
