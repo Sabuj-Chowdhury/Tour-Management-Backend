@@ -66,7 +66,11 @@ const getAllTours = async (query: Record<string, string>) => {
   const filter = query;
   const searchTerm = query.search || "";
   const sort = query.sort || "-createdAt";
-  const fieldFiltering = query.field.split(",").join(" ") || "";
+  const fieldFiltering = query.field?.split(",").join(" ") || "";
+
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 5;
+  const skip = (page - 1) * limit;
 
   // to delete field from the filter
   for (const field of excludeFields) {
@@ -83,7 +87,9 @@ const getAllTours = async (query: Record<string, string>) => {
   const tours = await Tour.find(search)
     .find(filter)
     .sort(sort)
-    .select(fieldFiltering);
+    .select(fieldFiltering)
+    .skip(skip)
+    .limit(limit);
 
   const totalTours = await Tour.countDocuments();
 
