@@ -62,50 +62,59 @@ const createTour = async (payload: ITour) => {
   return tour;
 };
 
-const getAllTours = async (query: Record<string, string>) => {
-  const filter = query;
-  const searchTerm = query.search || "";
-  const sort = query.sort || "-createdAt";
-  const fieldFiltering = query.field?.split(",").join(" ") || "";
+/** OLD get all tours */
+// const getAllTours = async (query: Record<string, string>) => {
+//   const filter = query;
+//   const searchTerm = query.search || "";
+//   const sort = query.sort || "-createdAt";
+//   const fieldFiltering = query.field?.split(",").join(" ") || "";
 
-  const page = Number(query.page) || 1;
-  const limit = Number(query.limit) || 10;
-  const skip = (page - 1) * limit;
+//   const page = Number(query.page) || 1;
+//   const limit = Number(query.limit) || 10;
+//   const skip = (page - 1) * limit;
 
-  // to delete field from the filter
-  for (const field of excludeFields) {
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete filter[field];
-  }
+//   // to delete field from the filter
+//   for (const field of excludeFields) {
+//     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+//     delete filter[field];
+//   }
 
-  const search = {
-    $or: searchConst.map((field) => ({
-      [field]: { $regex: searchTerm, $options: "i" },
-    })),
-  };
+//   const search = {
+//     $or: searchConst.map((field) => ({
+//       [field]: { $regex: searchTerm, $options: "i" },
+//     })),
+//   };
 
-  const tours = await Tour.find(search)
-    .find(filter)
-    .sort(sort)
-    .select(fieldFiltering)
-    .skip(skip)
-    .limit(limit);
+//   // const tours = await Tour.find(search)
+//   //   .find(filter)
+//   //   .sort(sort)
+//   //   .select(fieldFiltering)
+//   //   .skip(skip)
+//   //   .limit(limit);
 
-  const totalTours = await Tour.countDocuments();
-  const totalPage = Math.ceil(totalTours / limit);
+//   const filterQuery = Tour.find(filter);
+//   const tours = filterQuery.find(search);
+//   const allTours = await tours
+//     .sort(sort)
+//     .select(fieldFiltering)
+//     .skip(skip)
+//     .limit(limit);
 
-  const meta = {
-    total: totalTours,
-    totalPage: totalPage,
-    page: page,
-    limit: limit,
-  };
+//   const totalTours = await Tour.countDocuments();
+//   const totalPage = Math.ceil(totalTours / limit);
 
-  return {
-    data: tours,
-    meta: meta,
-  };
-};
+//   const meta = {
+//     total: totalTours,
+//     totalPage: totalPage,
+//     currentPage: page,
+//     limit: limit,
+//   };
+
+//   return {
+//     data: allTours,
+//     meta: meta,
+//   };
+// };
 
 const updateTour = async (id: string, payload: Partial<ITour>) => {
   const existingTour = await Tour.findById(id);
