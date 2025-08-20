@@ -103,8 +103,17 @@ const getAllUsers = async (query: Record<string, string>) => {
   };
 };
 
+const getSingleUser = async (id: string) => {
+  const user = await User.findById(id);
+
+  return {
+    data: user,
+  };
+};
+
 export const userServices = {
   createUser,
   getAllUsers,
   updateUser,
+  getSingleUser,
 };
