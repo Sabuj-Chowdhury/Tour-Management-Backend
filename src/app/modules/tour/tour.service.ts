@@ -1,5 +1,5 @@
 import AppError from "../../errorHelpers/AppError";
-import { searchConst } from "./tour.constent";
+import { searchConst } from "./tour.constant";
 import { ITour, ITourType } from "./tour.interface";
 import { Tour, TourType } from "./tour.model";
 import httpStatus from "http-status-codes";
