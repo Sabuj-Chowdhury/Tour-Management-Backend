@@ -1,4 +1,5 @@
 import AppError from "../../errorHelpers/AppError";
+import { searchConst } from "./tour.constent";
 import { ITour, ITourType } from "./tour.interface";
 import { Tour, TourType } from "./tour.model";
 import httpStatus from "http-status-codes";
@@ -64,8 +65,19 @@ const getAllTours = async (query: Record<string, string>) => {
   // console.log(query);
 
   const filter = query;
+  const searchTerm = query.search || "";
+  // console.log(search);
 
-  const tours = await Tour.find(filter);
+  delete filter["search"];
+
+  const search = {
+    $or: searchConst.map((field) => ({
+      [field]: { $regex: searchTerm, $options: "i" },
+    })),
+  };
+
+  // console.log(filter);
+  const tours = await Tour.find(search).find(filter);
 
   const totalTours = await Tour.countDocuments();
 
