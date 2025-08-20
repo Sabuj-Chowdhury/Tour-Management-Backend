@@ -69,7 +69,7 @@ const getAllTours = async (query: Record<string, string>) => {
   const fieldFiltering = query.field?.split(",").join(" ") || "";
 
   const page = Number(query.page) || 1;
-  const limit = Number(query.limit) || 5;
+  const limit = Number(query.limit) || 10;
   const skip = (page - 1) * limit;
 
   // to delete field from the filter
@@ -92,12 +92,18 @@ const getAllTours = async (query: Record<string, string>) => {
     .limit(limit);
 
   const totalTours = await Tour.countDocuments();
+  const totalPage = Math.ceil(totalTours / limit);
+
+  const meta = {
+    total: totalTours,
+    totalPage: totalPage,
+    page: page,
+    limit: limit,
+  };
 
   return {
     data: tours,
-    meta: {
-      total: totalTours,
-    },
+    meta: meta,
   };
 };
 
