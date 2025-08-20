@@ -98,8 +98,24 @@ const getAllUsers = tryCatch(
   }
 );
 
+const getSingleUser = tryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+
+    const user = await userServices.getSingleUser(id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStats.OK,
+      message: "Single user!",
+      data: user.data,
+    });
+  }
+);
+
 export const userController = {
   createUser,
   getAllUsers,
   updateUser,
+  getSingleUser,
 };
