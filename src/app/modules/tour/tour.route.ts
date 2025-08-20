@@ -29,6 +29,8 @@ tourRouter.patch(
   tourController.updateTourType
 );
 
+tourRouter.get("/tour-types/:id", tourController.getSingleTourType);
+
 tourRouter.delete(
   "/tour-types/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
