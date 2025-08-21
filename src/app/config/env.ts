@@ -17,6 +17,12 @@ interface IEnv {
   GOOGLE_CALLBACK_URL: string;
   EXPRESS_SESSION_SECRET: string;
   FRONTEND_URL: string;
+  SSL: {
+    SSL_STORE_ID: string;
+    SSL_STORE_PASS: string;
+    SSL_PAYMENT_API: string;
+    SSL_VALIDATION_API: string;
+  };
 }
 
 const requiredVariable = [
@@ -35,6 +41,10 @@ const requiredVariable = [
   "GOOGLE_CALLBACK_URL",
   "EXPRESS_SESSION_SECRET",
   "FRONTEND_URL",
+  "SSL_STORE_ID",
+  "SSL_STORE_PASS",
+  "SSL_PAYMENT_API",
+  "SSL_VALIDATION_API",
 ];
 const loadEnv = (): IEnv => {
   requiredVariable.forEach((key) => {
@@ -59,6 +69,12 @@ const loadEnv = (): IEnv => {
     GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL as string,
     EXPRESS_SESSION_SECRET: process.env.EXPRESS_SESSION_SECRET as string,
     FRONTEND_URL: process.env.FRONTEND_URL as string,
+    SSL: {
+      SSL_STORE_ID: process.env.SSL_STORE_ID as string,
+      SSL_STORE_PASS: process.env.SSL_STORE_PASS as string,
+      SSL_PAYMENT_API: process.env.SSL_PAYMENT_API as string,
+      SSL_VALIDATION_API: process.env.SSL_VALIDATION_API as string,
+    },
   };
 };
 
