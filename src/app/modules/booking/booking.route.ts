@@ -1,0 +1,16 @@
+import { Router } from "express";
+import { checkAuth } from "../../middlewares/checkAuth";
+import { Role } from "../user/user.interface";
+import { validateRequest } from "../../middlewares/validateRequest";
+import { createBookingZodSchema } from "./booking.validation";
+import { bookingController } from "./booking.controller";
+
+export const bookingRouter = Router();
+
+// api/v1/booking
+bookingRouter.post(
+  "/",
+  checkAuth(...Object.values(Role)),
+  validateRequest(createBookingZodSchema),
+  bookingController.createBooking
+);
