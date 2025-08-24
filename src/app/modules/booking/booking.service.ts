@@ -8,6 +8,8 @@ import { Payment } from "../payment/payment.model";
 import { PAYMENT_STATUS } from "../payment/payment.interface";
 import { getTransactionId } from "../../utils/getTransactionId";
 import { Tour } from "../tour/tour.model";
+import { ISSLCommerz } from "../SSLCOMMERZ/sslcommerz.interface";
+import { SSLService } from "../SSLCOMMERZ/sslcommerz.service";
 
 // Frontend(localhost:5173) - User - Tour - Booking (Pending) - Payment(Unpaid) -> SSLCommerz Page -> Payment Complete -> Backend(localhost:5000/api/v1/payment/success) -> Update Payment(PAID) & Booking(CONFIRM) -> redirect to frontend -> Frontend(localhost:5173/payment/success)
 
@@ -79,6 +81,24 @@ const createBooking = async (payload: Partial<IBooking>, userId: string) => {
       .populate("tour", "title costFrom")
       .populate("payment");
 
+    const userAddress = (updateBooking?.user as any).address;
+    const userEmail = (updateBooking?.user as any).email;
+    const userPhone = (updateBooking?.user as any).phone;
+    const userName = (updateBooking?.user as any).name;
+
+    const sslPaymentPayload: ISSLCommerz = {
+      address: userAddress,
+      name: userName,
+      phoneNumber: userPhone,
+      email: userEmail,
+      amount: amount,
+      transactionId: transactionId,
+    };
+
+    // call to SSL payment initiate API
+    const sslPayment = await SSLService.sslPaymentInitiate(sslPaymentPayload);
+    // console.log(sslPayment);
+
     // transaction needs to committed after all operation
     await session.commitTransaction(); /**** Transaction ****/
 
@@ -86,7 +106,10 @@ const createBooking = async (payload: Partial<IBooking>, userId: string) => {
     session.endSession();
 
     //   lastly return the updated booking
-    return updateBooking;
+    return {
+      paymentUrl: sslPayment.GatewayPageURL,
+      booking: updateBooking,
+    };
   } catch (error: any) {
     // abort operation if any error occurs
     await session.abortTransaction(); /**** Rollback ****/

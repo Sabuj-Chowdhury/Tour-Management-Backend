@@ -1,5 +1,5 @@
 export interface ISSLCommerz {
-  amount: string;
+  amount: number;
   transactionId: string;
   name: string;
   email: string;
