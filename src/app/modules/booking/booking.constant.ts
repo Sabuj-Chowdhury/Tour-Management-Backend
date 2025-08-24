@@ -1,1 +1,1 @@
-export const bookingConst = ["user", "status"];
+export const bookingConst = ["status"];

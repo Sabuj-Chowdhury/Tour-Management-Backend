@@ -39,3 +39,10 @@ bookingRouter.patch(
   validateRequest(updateBookingStatusZodSchema),
   bookingController.updateBookingStatus
 );
+
+// api/v1/booking
+bookingRouter.get(
+  "/",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  bookingController.getAllBookings
+);

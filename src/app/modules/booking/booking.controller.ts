@@ -62,9 +62,25 @@ const updateBookingStatus = tryCatch(async (req: Request, res: Response) => {
   });
 });
 
+const getAllBookings = tryCatch(async (req: Request, res: Response) => {
+  const query = req.query;
+  const bookings = await bookingService.getAllBookings(
+    query as Record<string, string>
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Bookings retrieved successfully",
+    data: bookings.data,
+    meta: bookings.meta,
+  });
+});
+
 export const bookingController = {
   createBooking,
   getUserBookings,
   getBookingById,
   updateBookingStatus,
+  getAllBookings,
 };
