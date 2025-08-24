@@ -10,7 +10,6 @@ import { getTransactionId } from "../../utils/getTransactionId";
 import { Tour } from "../tour/tour.model";
 import { ISSLCommerz } from "../SSLCOMMERZ/sslcommerz.interface";
 import { SSLService } from "../SSLCOMMERZ/sslcommerz.service";
-import { JwtPayload } from "jsonwebtoken";
 
 // Frontend(localhost:5173) - User - Tour - Booking (Pending) - Payment(Unpaid) -> SSLCommerz Page -> Payment Complete -> Backend(localhost:5000/api/v1/payment/success) -> Update Payment(PAID) & Booking(CONFIRM) -> redirect to frontend -> Frontend(localhost:5173/payment/success)
 
@@ -121,8 +120,8 @@ const createBooking = async (payload: Partial<IBooking>, userId: string) => {
   }
 };
 
-const getUserBookings = async (decodedToken: JwtPayload) => {
-  const userBookings = Booking.findOne({ user: decodedToken.userID });
+const getUserBookings = async (userID: string) => {
+  const userBookings = await Booking.find({ user: userID });
 
   return {
     data: userBookings,

@@ -14,3 +14,10 @@ bookingRouter.post(
   validateRequest(createBookingZodSchema),
   bookingController.createBooking
 );
+
+// api/v1/booking/my-bookings
+bookingRouter.get(
+  "/my-bookings",
+  checkAuth(...Object.values(Role)),
+  bookingController.getUserBookings
+);

@@ -26,7 +26,7 @@ const createBooking = tryCatch(async (req: Request, res: Response) => {
 const getUserBookings = tryCatch(async (req: Request, res: Response) => {
   const user = req.user as JwtPayload;
 
-  const userBookings = await bookingService.getUserBookings(user);
+  const userBookings = await bookingService.getUserBookings(user.userID);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
