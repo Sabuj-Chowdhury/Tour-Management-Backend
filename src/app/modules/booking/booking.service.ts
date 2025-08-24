@@ -10,6 +10,8 @@ import { getTransactionId } from "../../utils/getTransactionId";
 import { Tour } from "../tour/tour.model";
 import { ISSLCommerz } from "../SSLCOMMERZ/sslcommerz.interface";
 import { SSLService } from "../SSLCOMMERZ/sslcommerz.service";
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { bookingConst } from "./booking.constant";
 
 // Frontend(localhost:5173) - User - Tour - Booking (Pending) - Payment(Unpaid) -> SSLCommerz Page -> Payment Complete -> Backend(localhost:5000/api/v1/payment/success) -> Update Payment(PAID) & Booking(CONFIRM) -> redirect to frontend -> Frontend(localhost:5173/payment/success)
 
@@ -152,9 +154,31 @@ const updateBookingStatus = async (id: string, payload: Partial<IBooking>) => {
   return updateBooking;
 };
 
+const getAllBookings = async (query: Record<string, string>) => {
+  const queryBuilder = new QueryBuilder(Booking.find(), query);
+
+  const allBookings = await queryBuilder
+    .search(bookingConst)
+    .filter()
+    .sort()
+    .fields()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    allBookings.build(),
+    queryBuilder.getMeta(),
+  ]);
+
+  return {
+    data,
+    meta,
+  };
+};
+
 export const bookingService = {
   createBooking,
   getUserBookings,
   getBookingById,
   updateBookingStatus,
+  getAllBookings,
 };
