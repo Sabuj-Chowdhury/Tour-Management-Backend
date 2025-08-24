@@ -9,7 +9,9 @@ const successPayment = tryCatch(async (req: Request, res: Response) => {
     query as Record<string, string>
   );
   if (result.success) {
-    res.redirect(envVariable.SSL.SSL_SUCCESS_FRONTEND_URL);
+    res.redirect(
+      `${envVariable.SSL.SSL_SUCCESS_FRONTEND_URL}?transactionId=${query.transactionId}&amount=${query.amount}&status=success&message=${result.message}`
+    );
   }
 });
 
