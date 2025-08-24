@@ -36,7 +36,21 @@ const getUserBookings = tryCatch(async (req: Request, res: Response) => {
   });
 });
 
+const getBookingById = tryCatch(async (req: Request, res: Response) => {
+  const bookingID = req.params.bookingID;
+
+  const booking = await bookingService.getBookingById(bookingID);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Bookings retrieved successfully",
+    data: booking.booking,
+  });
+});
+
 export const bookingController = {
   createBooking,
   getUserBookings,
+  getBookingById,
 };
