@@ -32,7 +32,7 @@ const getUserBookings = tryCatch(async (req: Request, res: Response) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "Bookings retrieved successfully",
-    data: userBookings,
+    data: userBookings.userBookings,
   });
 });
 

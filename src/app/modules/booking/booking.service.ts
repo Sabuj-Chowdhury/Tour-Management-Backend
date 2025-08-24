@@ -124,11 +124,21 @@ const getUserBookings = async (userID: string) => {
   const userBookings = await Booking.find({ user: userID });
 
   return {
-    data: userBookings,
+    userBookings,
   };
+};
+
+const getBookingById = async (bookingID: string) => {
+  const booking = await Booking.findById(bookingID);
+  if (!booking) {
+    throw new AppError(httpStatus.BAD_REQUEST, "No booking found!");
+  }
+
+  return { booking };
 };
 
 export const bookingService = {
   createBooking,
   getUserBookings,
+  getBookingById,
 };
