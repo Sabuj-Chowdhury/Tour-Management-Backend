@@ -50,7 +50,9 @@ const newPaymentUrl = tryCatch(async (req: Request, res: Response) => {
     statusCode: httpStatus.CREATED,
     success: true,
     message: "new payment url!",
-    data: result.paymentUrl,
+    data: {
+      paymentUrl: result.paymentUrl,
+    },
   });
 });
 
