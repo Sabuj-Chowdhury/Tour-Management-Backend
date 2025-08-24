@@ -21,3 +21,10 @@ bookingRouter.get(
   checkAuth(...Object.values(Role)),
   bookingController.getUserBookings
 );
+
+// api/v1/booking/bookingId
+bookingRouter.get(
+  "/:bookingID",
+  checkAuth(...Object.values(Role)),
+  bookingController.getBookingById
+);
