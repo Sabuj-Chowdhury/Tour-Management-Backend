@@ -39,6 +39,44 @@ const successPayment = async (query: Record<string, string>) => {
   }
 };
 
+const cancelPayment = async (query: Record<string, string>) => {
+  // start the session
+  const session = await Booking.startSession();
+  session.startTransaction();
+
+  try {
+    // 1. update the payment status
+    const updatePaymentStatus = await Payment.findOneAndUpdate(
+      { transactionId: query.transactionId },
+      {
+        status: PAYMENT_STATUS.CANCELLED,
+      },
+      { new: true, runValidators: true, session }
+    );
+
+    // 2. update booking status
+    await Booking.findOneAndUpdate(
+      updatePaymentStatus?.booking,
+      {
+        status: BOOKING_STATUS.CANCEL,
+      },
+      { new: true, runValidators: true, session }
+    );
+
+    // commit the transaction --> save the change in the DB
+    session.commitTransaction();
+    session.endSession();
+
+    return { success: true, message: "Payment Canceled!" };
+  } catch (error) {
+    // abort the session
+    session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
+};
+
 export const paymentService = {
   successPayment,
+  cancelPayment,
 };
