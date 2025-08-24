@@ -15,6 +15,19 @@ const successPayment = tryCatch(async (req: Request, res: Response) => {
   }
 });
 
+const cancelPayment = tryCatch(async (req: Request, res: Response) => {
+  const query = req.query;
+  const result = await paymentService.cancelPayment(
+    query as Record<string, string>
+  );
+  if (!result.success) {
+    res.redirect(
+      `${envVariable.SSL.SSL_CANCEL_FRONTEND_URL}?transactionId=${query.transactionId}&amount=${query.amount}&status=success&message=${result.message}`
+    );
+  }
+});
+
 export const paymentController = {
   successPayment,
+  cancelPayment,
 };
