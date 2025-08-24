@@ -6,25 +6,37 @@ import { bookingService } from "./booking.service";
 import { JwtPayload } from "jsonwebtoken";
 import httpStatus from "http-status-codes";
 
-const createBooking = tryCatch(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const decodedToken = req.user as JwtPayload;
-    const payload = req.body;
+const createBooking = tryCatch(async (req: Request, res: Response) => {
+  const decodedToken = req.user as JwtPayload;
+  const payload = req.body;
 
-    const booking = await bookingService.createBooking(
-      payload,
-      decodedToken.userID
-    );
+  const booking = await bookingService.createBooking(
+    payload,
+    decodedToken.userID
+  );
 
-    sendResponse(res, {
-      statusCode: httpStatus.CREATED,
-      success: true,
-      message: "Booking created successfully",
-      data: booking,
-    });
-  }
-);
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Booking created successfully",
+    data: booking,
+  });
+});
+
+const getUserBookings = tryCatch(async (req: Request, res: Response) => {
+  const user = req.user as JwtPayload;
+
+  const userBookings = await bookingService.getUserBookings(user);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Bookings retrieved successfully",
+    data: userBookings,
+  });
+});
 
 export const bookingController = {
   createBooking,
+  getUserBookings,
 };
