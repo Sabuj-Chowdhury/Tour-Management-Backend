@@ -1,7 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import AppError from "../../errorHelpers/AppError";
 import { BOOKING_STATUS } from "../booking/booking.interface";
 import { Booking } from "../booking/booking.model";
+import { ISSLCommerz } from "../SSLCOMMERZ/sslcommerz.interface";
+import { SSLService } from "../SSLCOMMERZ/sslcommerz.service";
 import { PAYMENT_STATUS } from "./payment.interface";
 import { Payment } from "./payment.model";
+import httpStatus from "http-status-codes";
 
 const successPayment = async (query: Record<string, string>) => {
   const session = await Booking.startSession();
@@ -104,8 +109,41 @@ const failPayment = async (query: Record<string, string>) => {
   }
 };
 
+// if user/client need a payment URL for cancel/fail payment
+const newPaymentUrl = async (bookingId: string) => {
+  const payment = await Payment.findOne({ booking: bookingId });
+  if (!payment) {
+    throw new AppError(httpStatus.NOT_FOUND, "No payment found!");
+  }
+  const booking = await Booking.findById(payment.booking);
+
+  const userAddress = (booking?.user as any).address;
+  const userEmail = (booking?.user as any).email;
+  const userPhone = (booking?.user as any).phone;
+  const userName = (booking?.user as any).name;
+
+  const sslPaymentPayload: ISSLCommerz = {
+    address: userAddress,
+    name: userName,
+    phoneNumber: userPhone,
+    email: userEmail,
+    amount: payment.amount,
+    transactionId: payment.transactionId,
+  };
+
+  // call to SSL payment initiate API
+  const sslPayment = await SSLService.sslPaymentInitiate(sslPaymentPayload);
+  // console.log(sslPayment);
+
+  //   lastly return the updated booking
+  return {
+    paymentUrl: sslPayment.GatewayPageURL,
+  };
+};
+
 export const paymentService = {
   successPayment,
   cancelPayment,
   failPayment,
+  newPaymentUrl,
 };
