@@ -64,13 +64,41 @@ const cancelPayment = async (query: Record<string, string>) => {
     );
 
     // commit the transaction --> save the change in the DB
-    session.commitTransaction();
+    await session.commitTransaction();
     session.endSession();
 
-    return { success: true, message: "Payment Canceled!" };
+    return { success: false, message: "Payment Canceled!" };
   } catch (error) {
     // abort the session
-    session.abortTransaction();
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
+};
+
+const failPayment = async (query: Record<string, string>) => {
+  // start the transaction in the session
+  const session = await Booking.startSession();
+  session.startTransaction();
+  try {
+    const updatePaymentStatus = await Payment.findOneAndUpdate(
+      { transactionId: query.transactionId },
+      { status: PAYMENT_STATUS.FAILED },
+      { new: true, runValidators: true, session }
+    );
+
+    await Booking.findOneAndUpdate(
+      updatePaymentStatus?.booking,
+      { status: BOOKING_STATUS.FAILED },
+      { new: true, runValidators: true, session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return { success: false, message: "Payment failed!" };
+  } catch (error) {
+    await session.abortTransaction();
     session.endSession();
     throw error;
   }
@@ -79,4 +107,5 @@ const cancelPayment = async (query: Record<string, string>) => {
 export const paymentService = {
   successPayment,
   cancelPayment,
+  failPayment,
 };
