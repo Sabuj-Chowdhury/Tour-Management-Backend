@@ -6,3 +6,4 @@ export const paymentRouter = Router();
 paymentRouter.post("/success", paymentController.successPayment);
 paymentRouter.post("/fail", paymentController.failPayment);
 paymentRouter.post("/cancel", paymentController.cancelPayment);
+paymentRouter.post("/init-payment/:bookingId", paymentController.newPaymentUrl);

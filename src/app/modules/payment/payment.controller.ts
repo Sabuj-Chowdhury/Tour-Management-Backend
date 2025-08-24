@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import tryCatch from "../../utils/tryCatch";
 import { paymentService } from "./payment.service";
 import { envVariable } from "../../config/env";
+import { sendResponse } from "../../utils/sendResponse";
+import httpStatus from "http-status-codes";
 
 const successPayment = tryCatch(async (req: Request, res: Response) => {
   const query = req.query;
@@ -39,8 +41,22 @@ const failPayment = tryCatch(async (req: Request, res: Response) => {
   }
 });
 
+const newPaymentUrl = tryCatch(async (req: Request, res: Response) => {
+  const bookingId = req.params.bookingId;
+
+  const result = await paymentService.newPaymentUrl(bookingId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "new payment url!",
+    data: result.paymentUrl,
+  });
+});
+
 export const paymentController = {
   successPayment,
   cancelPayment,
   failPayment,
+  newPaymentUrl,
 };
