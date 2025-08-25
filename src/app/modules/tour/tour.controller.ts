@@ -84,10 +84,10 @@ const deleteTourType = tryCatch(
 
 const createTour = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log({
-      data: req.body,
-      files: req.files,
-    });
+    // console.log({
+    //   data: req.body,
+    //   files: req.files,
+    // });
 
     const tourPayload: ITour = {
       ...req.body,
