@@ -24,6 +24,7 @@ app.use(express.json());
 app.use(cors());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.urlencoded({ extended: true }));
 
 // routes
 app.use("/api/v1", router);

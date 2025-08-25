@@ -4,10 +4,21 @@ import tryCatch from "../../utils/tryCatch";
 import { divisionService } from "./division.service";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status-codes";
+import { IDivision } from "./division.interface";
 
 const createDivision = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    const newDivision = await divisionService.createDivision(req.body);
+    const payload: IDivision = {
+      ...req.body,
+      thumbnail: req.file?.path,
+    };
+
+    const newDivision = await divisionService.createDivision(payload);
+
+    // console.log({
+    //   file: req.file,
+    //   body: req.body,
+    // });
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
