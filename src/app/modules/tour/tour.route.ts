@@ -54,6 +54,7 @@ tourRouter.get("/:slug", tourController.getSingleTour);
 tourRouter.patch(
   "/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  multerUpload.array("files"),
   validateRequest(updateTourZodSchema),
   tourController.updateTour
 );

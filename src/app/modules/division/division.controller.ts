@@ -65,13 +65,21 @@ const updateDivision = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
 
-    const updatedDivision = await divisionService.updateDivision(id, req.body);
+    const payload: IDivision = {
+      ...req.body,
+      thumbnail: req.file?.path,
+    };
+
+    const updatedNewDivision = await divisionService.updateDivision(
+      id,
+      payload
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: "Division updated successfully!",
-      data: updateDivision,
+      data: updatedNewDivision,
     });
   }
 );

@@ -142,7 +142,12 @@ const updateTour = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
 
-    const updatedTour = await tourService.updateTour(id, req.body);
+    const tourPayload: ITour = {
+      ...req.body,
+      images: (req.files as Express.Multer.File[]).map((file) => file.path),
+    };
+
+    const updatedTour = await tourService.updateTour(id, tourPayload);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
