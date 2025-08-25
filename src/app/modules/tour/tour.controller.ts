@@ -4,6 +4,7 @@ import tryCatch from "../../utils/tryCatch";
 import { tourService } from "./tour.service";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status-codes";
+import { ITour } from "./tour.interface";
 
 const createTourTypes = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -83,7 +84,17 @@ const deleteTourType = tryCatch(
 
 const createTour = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    const tour = await tourService.createTour(req.body);
+    console.log({
+      data: req.body,
+      files: req.files,
+    });
+
+    const tourPayload: ITour = {
+      ...req.body,
+      images: (req.files as Express.Multer.File[]).map((file) => file.path),
+    };
+
+    const tour = await tourService.createTour(tourPayload);
 
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
