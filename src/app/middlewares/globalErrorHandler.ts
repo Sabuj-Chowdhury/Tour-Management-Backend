@@ -18,10 +18,12 @@ export const globalErrorHandler = async (
 ) => {
   // console.log({file :req.files});
 
+  // delete single image from cloudinary
   if (req.file) {
     await deleteImageFromCloudinary(req.file.path);
   }
 
+  // delete multiple images from cloudinary
   if (req.files && Array.isArray(req.files) && req.files.length > 0) {
     const imageUrls = (req.files as Express.Multer.File[]).map(
       (file) => file.path

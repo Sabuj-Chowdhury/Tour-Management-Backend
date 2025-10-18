@@ -8,6 +8,7 @@ import { sendResponse } from "../../utils/sendResponse";
 import { verifyTokenFn } from "../../utils/jwt";
 import { envVariable } from "../../config/env";
 import { JwtPayload } from "jsonwebtoken";
+import { IUser } from "./user.interface";
 
 // before using tryCatch util function
 
@@ -38,7 +39,12 @@ import { JwtPayload } from "jsonwebtoken";
 
 const createUser = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    const user = await userServices.createUser(req.body);
+    const payload: IUser = {
+      ...req.body,
+      picture: req.file?.path,
+    };
+
+    const user = await userServices.createUser(payload);
 
     sendResponse(res, {
       success: true,
@@ -58,7 +64,10 @@ const updateUser = tryCatch(
     //   envVariable.JWT_ACCESS_SECRET
     // ) as JwtPayload;
     const verifiedToken = req.user;
-    const payload = req.body;
+    const payload: IUser = {
+      ...req.body,
+      picture: req.file?.path,
+    };
     const user = await userServices.updateUser(
       userID,
       payload,
