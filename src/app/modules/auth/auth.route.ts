@@ -3,6 +3,7 @@ import { authController } from "./auth.controller";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { Role } from "../user/user.interface";
 import passport from "passport";
+import { envVariable } from "../../config/env";
 
 export const authRouter = Router();
 
@@ -40,6 +41,8 @@ authRouter.get(
 
 authRouter.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
+  passport.authenticate("google", {
+    failureRedirect: `${envVariable.FRONTEND_URL}/login?error=there is some issue with your account, please contact with customer support!`,
+  }),
   authController.googleCallBack
 );
