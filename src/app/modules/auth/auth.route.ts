@@ -14,6 +14,17 @@ authRouter.post(
   checkAuth(...Object.values(Role)),
   authController.resetPassword
 );
+authRouter.post(
+  "/change-password",
+  checkAuth(...Object.values(Role)),
+  authController.changePassword
+);
+
+authRouter.post(
+  "/set-password",
+  checkAuth(...Object.values(Role)),
+  authController.setPassword
+);
 authRouter.get(
   "/google",
 
