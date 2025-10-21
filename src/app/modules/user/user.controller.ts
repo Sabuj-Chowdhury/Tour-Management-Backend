@@ -107,6 +107,27 @@ const getAllUsers = tryCatch(
   }
 );
 
+const getMe = tryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+
+    const users = await userServices.getMe(decodedToken.userID);
+
+    // res.status(httpStats.OK).json({
+    //   success: true,
+    //   message: "All Users Retrieved Successfully!",
+    //   data: users,
+    // });
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStats.OK,
+      message: "Users Retrieved Successfully!",
+      data: users.data,
+    });
+  }
+);
+
 const getSingleUser = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
@@ -127,4 +148,5 @@ export const userController = {
   getAllUsers,
   updateUser,
   getSingleUser,
+  getMe,
 };

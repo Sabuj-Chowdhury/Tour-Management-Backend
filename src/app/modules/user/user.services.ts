@@ -110,7 +110,15 @@ const getAllUsers = async (query: Record<string, string>) => {
 };
 
 const getSingleUser = async (id: string) => {
-  const user = await User.findById(id);
+  const user = await User.findById(id).select("-password");
+
+  return {
+    data: user,
+  };
+};
+
+const getMe = async (id: string) => {
+  const user = await User.findById(id).select("-password");
 
   return {
     data: user,
@@ -122,4 +130,5 @@ export const userServices = {
   getAllUsers,
   updateUser,
   getSingleUser,
+  getMe,
 };

@@ -19,6 +19,7 @@ userRouter.get(
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   userController.getAllUsers
 );
+userRouter.get("/me", checkAuth(...Object.values(Role)), userController.getMe);
 userRouter.patch(
   "/:id",
   multerUpload.single("file"),
