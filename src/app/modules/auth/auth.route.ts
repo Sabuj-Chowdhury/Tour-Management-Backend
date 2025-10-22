@@ -26,6 +26,14 @@ authRouter.post(
   checkAuth(...Object.values(Role)),
   authController.setPassword
 );
+
+// TODO
+
+// authRouter.post(
+//   "/forget-password",
+
+//   authController.forgetPassword
+// );
 authRouter.get(
   "/google",
 
